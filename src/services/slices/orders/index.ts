@@ -1,24 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { TIngredient } from '@utils-types';
 import {
   createRemoteDataReducers,
   RemoteDataState
 } from '../remote-data-reducers';
 import { STATUS } from '../../../constants';
+import { TOrder } from '@utils-types';
 
-type IngredientState = RemoteDataState<TIngredient[], unknown>;
+type OrdersState = RemoteDataState<TOrder[] | null, unknown>;
 
-const initialState: IngredientState = {
+const initialState: OrdersState = {
   data: [],
   error: null,
   status: STATUS.initial
 };
 
-export const IngredientsSlice = createSlice({
-  name: 'ingredients',
+export const OrdersSlice = createSlice({
+  name: 'orders',
   initialState,
   reducers: {
-    ...createRemoteDataReducers<IngredientState>(initialState)
+    ...createRemoteDataReducers<OrdersState>(initialState)
   },
   selectors: {
     getData: (sliceState) => sliceState.data,

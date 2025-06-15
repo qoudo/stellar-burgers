@@ -8,10 +8,16 @@ import {
 } from 'react-redux';
 import { rootSaga } from './sagas';
 import { IngredientsSlice } from './slices/indredients';
+import { FeedsSlice } from './slices/feeds';
+import { OrdersSlice } from './slices/orders';
+import { UserSlice } from './slices/user';
 
 const rootReducer = {
-  ingredients: IngredientsSlice.reducer
-}; // Заменить на импорт настоящего редьюсера
+  ingredients: IngredientsSlice.reducer,
+  feeds: FeedsSlice.reducer,
+  orders: OrdersSlice.reducer,
+  user: UserSlice.reducer
+};
 
 const sagaMiddleware = createSagaMiddleware();
 
