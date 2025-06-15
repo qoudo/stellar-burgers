@@ -1,3 +1,5 @@
+import { Status } from '../constants';
+
 export type TIngredient = {
   _id: string;
   name: string;
@@ -38,3 +40,5 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export declare const IStatus: Record<Status, Status>;
