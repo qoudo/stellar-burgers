@@ -38,7 +38,6 @@ const App = () => {
 
   const closeModal = () => navigate(-1);
 
-  // Если есть состояние background — показываем модальные окна поверх основной страницы
   const backgroundLocation = location.state?.background;
 
   return (

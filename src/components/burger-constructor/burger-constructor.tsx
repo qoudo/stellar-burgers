@@ -12,7 +12,7 @@ export const BurgerConstructor: FC = () => {
   const { bun, ingredients, orderRequest, orderModalData } = useSelector(
     (state) => state.burgerBuilder
   );
-  const { user } = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
 
   const constructorItems = {
     bun,

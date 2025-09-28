@@ -1,7 +1,7 @@
 import { FC, useState, SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { forgotPasswordApi } from '@api';
+import { forgotPasswordApi } from '../../utils/burger-api';
 import { ForgotPasswordUI } from '@ui-pages';
 
 export const ForgotPassword: FC = () => {
@@ -19,7 +19,7 @@ export const ForgotPassword: FC = () => {
         localStorage.setItem('resetPassword', 'true');
         navigate('/reset-password', { replace: true });
       })
-      .catch((err) => setError(err));
+      .catch((err: Error) => setError(err));
   };
 
   return (
