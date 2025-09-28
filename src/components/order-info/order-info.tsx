@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useSelector } from '../../services/store';
-import { getOrderByNumberApi } from '../../utils/burger-api';
+import { useSelector, useDispatch } from '../../services/store';
+import { getOrderByNumber } from '../../services/slices/feedSlice';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
+  const dispatch = useDispatch();
 
   const ingredients = useSelector((state) => state.ingredients.ingredients);
   const orders = useSelector((state) => state.feed.orders);
@@ -29,16 +30,10 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     if (!orderData && number) {
-      // Если заказ не найден в локальных данных, загружаем с сервера
-      getOrderByNumberApi(parseInt(number))
-        .then((response) => {
-          // Здесь можно добавить заказ в store если нужно
-        })
-        .catch((error) => {
-          console.error('Error fetching order:', error);
-        });
+      // Если заказ не найден в локальных данных, загружаем с сервера через thunk
+      dispatch(getOrderByNumber(parseInt(number)));
     }
-  }, [orderData, number]);
+  }, [orderData, number, dispatch]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

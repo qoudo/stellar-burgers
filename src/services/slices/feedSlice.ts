@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getFeedsApi, getOrdersApi } from '../../utils/burger-api';
+import {
+  getFeedsApi,
+  getOrdersApi,
+  getOrderByNumberApi
+} from '../../utils/burger-api';
 import { TOrder } from '../../utils/types';
 
 export interface TFeedState {
@@ -34,6 +38,14 @@ export const getOrders = createAsyncThunk(
   async () => await getOrdersApi()
 );
 
+export const getOrderByNumber = createAsyncThunk(
+  'feed/getOrderByNumber',
+  async (orderNumber: number) => {
+    const response = await getOrderByNumberApi(orderNumber);
+    return response.orders[0]; // API возвращает массив с одним заказом
+  }
+);
+
 const feedSlice = createSlice({
   name: 'feed',
   initialState,
@@ -63,6 +75,24 @@ const feedSlice = createSlice({
         state.orders = action.payload;
       })
       .addCase(getOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+        state.loading = false;
+        // Добавляем заказ в orders если его там еще нет
+        const existingOrder = state.orders.find(
+          (order) => order.number === action.payload.number
+        );
+        if (!existingOrder) {
+          state.orders.push(action.payload);
+        }
+      })
+      .addCase(getOrderByNumber.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
