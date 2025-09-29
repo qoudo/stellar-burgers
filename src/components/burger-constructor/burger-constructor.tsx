@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useSelector, useDispatch } from '../../services/store';
@@ -9,6 +10,7 @@ import {
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { bun, ingredients, orderRequest, orderModalData } = useSelector(
     (state) => state.burgerBuilder
   );
@@ -21,7 +23,10 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
-    if (!user) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
 
     const ingredientIds = [
       bun?._id,
