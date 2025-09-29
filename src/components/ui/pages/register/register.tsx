@@ -34,6 +34,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setUserName(e.target.value)}
               value={userName}
               name='name'
+              autoComplete='given-name'
               error={false}
               errorText=''
               size='default'
@@ -46,6 +47,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               name={'email'}
+              autoComplete='email'
               error={false}
               errorText=''
               size={'default'}
@@ -56,6 +58,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               name='password'
+              autoComplete='new-password'
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
