@@ -1,21 +1,39 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useSelector, useDispatch } from '../../services/store';
+import { getOrderByNumber } from '../../services/slices/feedSlice';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams();
+  const dispatch = useDispatch();
 
-  const ingredients: TIngredient[] = [];
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const orders = useSelector((state) => state.feed.orders);
+  const feedOrders = useSelector((state) => state.feed.feed.orders);
+
+  // Ищем заказ в локальных данных или загружаем с сервера
+  const orderData = useMemo(() => {
+    if (!number) return null;
+
+    const orderNumber = parseInt(number);
+    let order = orders.find((order) => order.number === orderNumber);
+
+    if (!order) {
+      order = feedOrders.find((order) => order.number === orderNumber);
+    }
+
+    return order || null;
+  }, [number, orders, feedOrders]);
+
+  useEffect(() => {
+    if (!orderData && number) {
+      // Если заказ не найден в локальных данных, загружаем с сервера через thunk
+      dispatch(getOrderByNumber(parseInt(number)));
+    }
+  }, [orderData, number, dispatch]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

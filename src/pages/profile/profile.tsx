@@ -1,50 +1,44 @@
 import { ProfileUI } from '@ui-pages';
-import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { FC, FormEvent, useEffect, useMemo } from 'react';
+import { useSelector, useDispatch } from '../../services/store';
+import { updateUser } from '../../services/slices/userSlice';
+import useForm from '../../hooks/useForm';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
-  const user = {
-    name: '',
-    email: ''
-  };
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
-  const [formValue, setFormValue] = useState({
-    name: user.name,
-    email: user.email,
-    password: ''
-  });
+  const defaultFormValues = useMemo(
+    () => ({
+      name: user?.name || '',
+      email: user?.email || '',
+      password: ''
+    }),
+    [user?.name, user?.email]
+  );
+
+  const {
+    values: formValue,
+    handleChange: handleInputChange,
+    resetForm
+  } = useForm(defaultFormValues);
 
   useEffect(() => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      name: user?.name || '',
-      email: user?.email || ''
-    }));
-  }, [user]);
+    resetForm(defaultFormValues);
+  }, [defaultFormValues, resetForm]);
 
   const isFormChanged =
     formValue.name !== user?.name ||
     formValue.email !== user?.email ||
     !!formValue.password;
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    dispatch(updateUser(formValue));
   };
 
-  const handleCancel = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setFormValue({
-      name: user.name,
-      email: user.email,
-      password: ''
-    });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }));
+  const handleCancel = () => {
+    resetForm(defaultFormValues);
   };
 
   return (
@@ -56,6 +50,4 @@ export const Profile: FC = () => {
       handleInputChange={handleInputChange}
     />
   );
-
-  return null;
 };

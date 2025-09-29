@@ -26,6 +26,7 @@ export const ForgotPasswordUI: FC<PageUIProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             name='email'
+            autoComplete='email'
             error={false}
             errorText=''
             size='default'
