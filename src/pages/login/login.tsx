@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent } from 'react';
+import { FC, FormEvent } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useSelector, useDispatch } from '../../services/store';
 import { loginUser } from '../../services/slices/userSlice';
@@ -10,7 +10,7 @@ export const Login: FC = () => {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.user);
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(loginUser(values));
   };
