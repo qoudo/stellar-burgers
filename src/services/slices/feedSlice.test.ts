@@ -233,35 +233,23 @@ describe('Тестирование feedSlice', () => {
   describe('Последовательность вызовов', () => {
     it('должен корректно обработать последовательные загрузки', () => {
       // Загружаем ленту заказов
-      let state = feedReducer(
-        initialState,
-        { type: getFeeds.pending.type }
-      );
+      let state = feedReducer(initialState, { type: getFeeds.pending.type });
 
-      state = feedReducer(
-        state,
-        {
-          type: getFeeds.fulfilled.type,
-          payload: mockFeedData
-        }
-      );
+      state = feedReducer(state, {
+        type: getFeeds.fulfilled.type,
+        payload: mockFeedData
+      });
 
       expect(state.feed.orders).toHaveLength(2);
       expect(state.feed.total).toBe(100);
 
       // Загружаем личные заказы
-      state = feedReducer(
-        state,
-        { type: getOrders.pending.type }
-      );
+      state = feedReducer(state, { type: getOrders.pending.type });
 
-      state = feedReducer(
-        state,
-        {
-          type: getOrders.fulfilled.type,
-          payload: [mockOrder1]
-        }
-      );
+      state = feedReducer(state, {
+        type: getOrders.fulfilled.type,
+        payload: [mockOrder1]
+      });
 
       expect(state.orders).toHaveLength(1);
       // feed не должен измениться
@@ -269,4 +257,3 @@ describe('Тестирование feedSlice', () => {
     });
   });
 });
-

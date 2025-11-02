@@ -210,22 +210,16 @@ describe('Тестирование userSlice', () => {
   describe('Последовательность вызовов', () => {
     it('должен корректно обработать регистрацию, затем выход', () => {
       // Регистрация
-      let state = userReducer(
-        initialState,
-        {
-          type: registerUser.fulfilled.type,
-          payload: mockUser
-        }
-      );
+      let state = userReducer(initialState, {
+        type: registerUser.fulfilled.type,
+        payload: mockUser
+      });
 
       expect(state.user).toEqual(mockUser);
       expect(state.isAuthChecked).toBe(true);
 
       // Выход
-      state = userReducer(
-        state,
-        { type: logoutUser.fulfilled.type }
-      );
+      state = userReducer(state, { type: logoutUser.fulfilled.type });
 
       expect(state.user).toBeNull();
       expect(state.isAuthChecked).toBe(true);
@@ -233,65 +227,47 @@ describe('Тестирование userSlice', () => {
 
     it('должен корректно обработать вход, обновление данных, затем выход', () => {
       // Вход
-      let state = userReducer(
-        initialState,
-        {
-          type: loginUser.fulfilled.type,
-          payload: mockUser
-        }
-      );
+      let state = userReducer(initialState, {
+        type: loginUser.fulfilled.type,
+        payload: mockUser
+      });
 
       expect(state.user).toEqual(mockUser);
 
       // Обновление
-      state = userReducer(
-        state,
-        {
-          type: updateUser.fulfilled.type,
-          payload: mockUpdatedUser
-        }
-      );
+      state = userReducer(state, {
+        type: updateUser.fulfilled.type,
+        payload: mockUpdatedUser
+      });
 
       expect(state.user).toEqual(mockUpdatedUser);
 
       // Выход
-      state = userReducer(
-        state,
-        { type: logoutUser.fulfilled.type }
-      );
+      state = userReducer(state, { type: logoutUser.fulfilled.type });
 
       expect(state.user).toBeNull();
     });
 
     it('должен корректно обработать ошибку входа и повторную попытку', () => {
       // Неудачный вход
-      let state = userReducer(
-        initialState,
-        {
-          type: loginUser.rejected.type,
-          error: { message: 'Неверный пароль' }
-        }
-      );
+      let state = userReducer(initialState, {
+        type: loginUser.rejected.type,
+        error: { message: 'Неверный пароль' }
+      });
 
       expect(state.error).toBe('Неверный пароль');
       expect(state.user).toBeNull();
 
       // Повторная попытка - pending
-      state = userReducer(
-        state,
-        { type: loginUser.pending.type }
-      );
+      state = userReducer(state, { type: loginUser.pending.type });
 
       expect(state.error).toBeUndefined();
 
       // Успешный вход
-      state = userReducer(
-        state,
-        {
-          type: loginUser.fulfilled.type,
-          payload: mockUser
-        }
-      );
+      state = userReducer(state, {
+        type: loginUser.fulfilled.type,
+        payload: mockUser
+      });
 
       expect(state.user).toEqual(mockUser);
       expect(state.error).toBeUndefined();
@@ -299,4 +275,3 @@ describe('Тестирование userSlice', () => {
     });
   });
 });
-

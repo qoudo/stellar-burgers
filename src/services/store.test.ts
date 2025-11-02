@@ -107,4 +107,3 @@ describe('Тестирование rootReducer', () => {
     expect(newState).toEqual(initialState);
   });
 });
-

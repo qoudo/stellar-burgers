@@ -78,8 +78,16 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('должен заменить булку при добавлении новой', () => {
-      const firstBun: TIngredient = { ...mockBun, _id: '1', name: 'Первая булка' };
-      const secondBun: TIngredient = { ...mockBun, _id: '2', name: 'Вторая булка' };
+      const firstBun: TIngredient = {
+        ...mockBun,
+        _id: '1',
+        name: 'Первая булка'
+      };
+      const secondBun: TIngredient = {
+        ...mockBun,
+        _id: '2',
+        name: 'Вторая булка'
+      };
 
       let state = burgerBuilderReducer(initialState, addIngredient(firstBun));
       expect(state.bun?.name).toBe('Первая булка');
@@ -108,7 +116,10 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('должен добавить несколько ингредиентов в список начинок', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       state = burgerBuilderReducer(state, addIngredient(mockIngredient2));
 
       expect(state.ingredients).toHaveLength(2);
@@ -117,7 +128,10 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('должен добавлять уникальный id каждому ингредиенту', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       state = burgerBuilderReducer(state, addIngredient(mockIngredient1));
 
       expect(state.ingredients).toHaveLength(2);
@@ -127,7 +141,10 @@ describe('Тестирование burgerBuilderSlice', () => {
 
   describe('Экшен removeIngredient', () => {
     it('должен удалить ингредиент из списка по id', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       const ingredientId = state.ingredients[0].id;
 
       state = burgerBuilderReducer(state, removeIngredient(ingredientId));
@@ -136,7 +153,10 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('должен удалить только указанный ингредиент', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       state = burgerBuilderReducer(state, addIngredient(mockIngredient2));
 
       const firstIngredientId = state.ingredients[0].id;
@@ -148,7 +168,10 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('не должен изменять состояние при удалении несуществующего id', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       const initialLength = state.ingredients.length;
 
       state = burgerBuilderReducer(state, removeIngredient('non-existent-id'));
@@ -159,7 +182,10 @@ describe('Тестирование burgerBuilderSlice', () => {
 
   describe('Экшен moveIngredient', () => {
     it('должен переместить ингредиент с одной позиции на другую', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       state = burgerBuilderReducer(state, addIngredient(mockIngredient2));
 
       const firstIngredientName = state.ingredients[0].name;
@@ -175,11 +201,18 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
 
     it('должен корректно перемещать ингредиенты в списке из трех элементов', () => {
-      let state = burgerBuilderReducer(initialState, addIngredient(mockIngredient1));
+      let state = burgerBuilderReducer(
+        initialState,
+        addIngredient(mockIngredient1)
+      );
       state = burgerBuilderReducer(state, addIngredient(mockIngredient2));
       state = burgerBuilderReducer(
         state,
-        addIngredient({ ...mockIngredient1, _id: '4', name: 'Третий ингредиент' })
+        addIngredient({
+          ...mockIngredient1,
+          _id: '4',
+          name: 'Третий ингредиент'
+        })
       );
 
       // Перемещаем первый элемент на последнюю позицию
@@ -278,4 +311,3 @@ describe('Тестирование burgerBuilderSlice', () => {
     });
   });
 });
-

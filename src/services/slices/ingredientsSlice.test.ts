@@ -152,21 +152,17 @@ describe('Тестирование ingredientsSlice', () => {
 
   describe('Последовательность вызовов', () => {
     it('должен корректно обработать последовательность pending -> fulfilled', () => {
-      let state = ingredientsReducer(
-        initialState,
-        { type: getIngredients.pending.type }
-      );
+      let state = ingredientsReducer(initialState, {
+        type: getIngredients.pending.type
+      });
 
       expect(state.loading).toBe(true);
       expect(state.error).toBeUndefined();
 
-      state = ingredientsReducer(
-        state,
-        {
-          type: getIngredients.fulfilled.type,
-          payload: mockIngredients
-        }
-      );
+      state = ingredientsReducer(state, {
+        type: getIngredients.fulfilled.type,
+        payload: mockIngredients
+      });
 
       expect(state.loading).toBe(false);
       expect(state.ingredients).toEqual(mockIngredients);
@@ -174,21 +170,17 @@ describe('Тестирование ingredientsSlice', () => {
     });
 
     it('должен корректно обработать последовательность pending -> rejected', () => {
-      let state = ingredientsReducer(
-        initialState,
-        { type: getIngredients.pending.type }
-      );
+      let state = ingredientsReducer(initialState, {
+        type: getIngredients.pending.type
+      });
 
       expect(state.loading).toBe(true);
 
       const errorMessage = 'Ошибка сервера';
-      state = ingredientsReducer(
-        state,
-        {
-          type: getIngredients.rejected.type,
-          error: { message: errorMessage }
-        }
-      );
+      state = ingredientsReducer(state, {
+        type: getIngredients.rejected.type,
+        error: { message: errorMessage }
+      });
 
       expect(state.loading).toBe(false);
       expect(state.error).toBe(errorMessage);
@@ -196,37 +188,27 @@ describe('Тестирование ingredientsSlice', () => {
 
     it('должен корректно обработать повторную загрузку после ошибки', () => {
       // Первая попытка с ошибкой
-      let state = ingredientsReducer(
-        initialState,
-        { type: getIngredients.pending.type }
-      );
+      let state = ingredientsReducer(initialState, {
+        type: getIngredients.pending.type
+      });
 
-      state = ingredientsReducer(
-        state,
-        {
-          type: getIngredients.rejected.type,
-          error: { message: 'Первая ошибка' }
-        }
-      );
+      state = ingredientsReducer(state, {
+        type: getIngredients.rejected.type,
+        error: { message: 'Первая ошибка' }
+      });
 
       expect(state.error).toBe('Первая ошибка');
 
       // Вторая попытка успешная
-      state = ingredientsReducer(
-        state,
-        { type: getIngredients.pending.type }
-      );
+      state = ingredientsReducer(state, { type: getIngredients.pending.type });
 
       expect(state.loading).toBe(true);
       expect(state.error).toBeUndefined();
 
-      state = ingredientsReducer(
-        state,
-        {
-          type: getIngredients.fulfilled.type,
-          payload: mockIngredients
-        }
-      );
+      state = ingredientsReducer(state, {
+        type: getIngredients.fulfilled.type,
+        payload: mockIngredients
+      });
 
       expect(state.loading).toBe(false);
       expect(state.ingredients).toEqual(mockIngredients);
@@ -234,4 +216,3 @@ describe('Тестирование ingredientsSlice', () => {
     });
   });
 });
-
