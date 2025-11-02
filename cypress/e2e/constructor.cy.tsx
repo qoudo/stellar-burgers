@@ -35,7 +35,7 @@ describe('Тестирование конструктора бургера', () 
 
     // Ждем загрузки ингредиентов
     cy.wait('@getIngredients');
-    
+
     // Скрываем webpack overlay если он появился
     cy.document().then((doc) => {
       const overlay = doc.getElementById('webpack-dev-server-client-overlay');
@@ -59,8 +59,7 @@ describe('Тестирование конструктора бургера', () 
 
       // Находим булку и кликаем на кнопку "Добавить"
       cy.contains('Краторная булка N-200i')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
         .click({ force: true });
 
@@ -79,10 +78,8 @@ describe('Тестирование конструктора бургера', () 
     it('должен добавить начинку в конструктор при клике на кнопку', () => {
       // Находим основной ингредиент и добавляем его
       cy.contains('Биокотлета из марсианской Магнолии')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Проверяем, что ингредиент добавлен в список начинок
@@ -97,10 +94,8 @@ describe('Тестирование конструктора бургера', () 
     it('должен добавить соус в конструктор при клике на кнопку', () => {
       // Находим соус и добавляем его
       cy.contains('Соус Spicy-X')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Проверяем, что соус добавлен в список начинок
@@ -112,34 +107,26 @@ describe('Тестирование конструктора бургера', () 
     it('должен добавить несколько разных ингредиентов в конструктор', () => {
       // Добавляем булку
       cy.contains('Краторная булка N-200i')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Добавляем основной ингредиент
       cy.contains('Биокотлета из марсианской Магнолии')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Добавляем соус
       cy.contains('Соус Spicy-X')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Добавляем еще один основной ингредиент
       cy.contains('Филе Люминесцентного тетраодонтимформа')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Проверяем, что все ингредиенты на месте
@@ -203,7 +190,9 @@ describe('Тестирование конструктора бургера', () 
 
     it('должно отображать данные именно того ингредиента, на который кликнули', () => {
       // Кликаем на первый ингредиент
-      cy.contains('Филе Люминесцентного тетраодонтимформа').click({ force: true });
+      cy.contains('Филе Люминесцентного тетраодонтимформа').click({
+        force: true
+      });
       cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
 
       // Проверяем, что отображаются данные первого ингредиента
@@ -232,24 +221,18 @@ describe('Тестирование конструктора бургера', () 
     it('должен успешно создать заказ и очистить конструктор', () => {
       // Собираем бургер
       cy.contains('Краторная булка N-200i')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       cy.contains('Биокотлета из марсианской Магнолии')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       cy.contains('Соус Spicy-X')
-        .parent()
-        .parent()
+        .closest('li')
         .find('button')
-        .first()
         .click({ force: true });
 
       // Проверяем, что ингредиенты добавлены
@@ -282,4 +265,3 @@ describe('Тестирование конструктора бургера', () 
     });
   });
 });
-
