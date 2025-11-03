@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { SELECTORS } from '../support/selectors';
+
 describe('Тестирование конструктора бургера', () => {
   const BURGER_API_URL = 'https://norma.education-services.ru/api';
 
@@ -44,120 +46,86 @@ describe('Тестирование конструктора бургера', () 
       cy.contains('Выберите булки').should('exist');
       cy.contains('Выберите начинку').should('exist');
 
-      // Находим булку и кликаем на кнопку "Добавить"
-      cy.contains('Краторная булка N-200i')
-        .closest('li')
-        .find('button')
-        .click();
+      // Добавляем булку через кастомную команду
+      cy.addIngredient('Краторная булка N-200i');
 
-      // Проверяем, что булка добавлена в конструктор
-      cy.get('[data-cy="constructor-bun-top"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
-      cy.get('[data-cy="constructor-bun-bottom"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
+      // Проверяем, что булка добавлена через кастомную команду
+      cy.checkIngredientInConstructor('Краторная булка N-200i', 'bun');
 
       // Проверяем, что плейсхолдер "Выберите булки" исчез
       cy.contains('Выберите булки').should('not.exist');
     });
 
     it('должен добавить начинку в конструктор при клике на кнопку', () => {
-      // Находим основной ингредиент и добавляем его
-      cy.contains('Биокотлета из марсианской Магнолии')
-        .closest('li')
-        .find('button')
-        .click();
+      // Добавляем основной ингредиент
+      cy.addIngredient('Биокотлета из марсианской Магнолии');
 
-      // Проверяем, что ингредиент добавлен в список начинок
-      cy.get('[data-cy="constructor-ingredients"]')
-        .contains('Биокотлета из марсианской Магнолии')
-        .should('exist');
+      // Проверяем, что ингредиент добавлен
+      cy.checkIngredientInConstructor(
+        'Биокотлета из марсианской Магнолии',
+        'filling'
+      );
 
       // Проверяем, что плейсхолдер "Выберите начинку" исчез
       cy.contains('Выберите начинку').should('not.exist');
     });
 
     it('должен добавить соус в конструктор при клике на кнопку', () => {
-      // Находим соус и добавляем его
-      cy.contains('Соус Spicy-X')
-        .closest('li')
-        .find('button')
-        .click();
+      // Добавляем соус
+      cy.addIngredient('Соус Spicy-X');
 
-      // Проверяем, что соус добавлен в список начинок
-      cy.get('[data-cy="constructor-ingredients"]')
-        .contains('Соус Spicy-X')
-        .should('exist');
+      // Проверяем, что соус добавлен
+      cy.checkIngredientInConstructor('Соус Spicy-X', 'filling');
     });
 
     it('должен добавить несколько разных ингредиентов в конструктор', () => {
-      // Добавляем булку
-      cy.contains('Краторная булка N-200i')
-        .closest('li')
-        .find('button')
-        .click();
+      // Добавляем ингредиенты
+      cy.addIngredient('Краторная булка N-200i');
+      cy.addIngredient('Биокотлета из марсианской Магнолии');
+      cy.addIngredient('Соус Spicy-X');
+      cy.addIngredient('Филе Люминесцентного тетраодонтимформа');
 
-      // Добавляем основной ингредиент
-      cy.contains('Биокотлета из марсианской Магнолии')
-        .closest('li')
-        .find('button')
-        .click();
-
-      // Добавляем соус
-      cy.contains('Соус Spicy-X')
-        .closest('li')
-        .find('button')
-        .click();
-
-      // Добавляем еще один основной ингредиент
-      cy.contains('Филе Люминесцентного тетраодонтимформа')
-        .closest('li')
-        .find('button')
-        .click();
+      // Используем alias для конструктора
+      cy.get(SELECTORS.constructorIngredients).as('ingredientsList');
 
       // Проверяем, что все ингредиенты на месте
-      cy.get('[data-cy="constructor-bun-top"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
-      cy.get('[data-cy="constructor-ingredients"]')
-        .contains('Биокотлета из марсианской Магнолии')
-        .should('exist');
-      cy.get('[data-cy="constructor-ingredients"]')
-        .contains('Соус Spicy-X')
-        .should('exist');
-      // Проверяем, что добавлено 2 начинки
-      cy.get('[data-cy="constructor-ingredients"]')
-        .children()
-        .should('have.length.at.least', 2);
+      cy.checkIngredientInConstructor('Краторная булка N-200i', 'bun');
+      cy.checkIngredientInConstructor(
+        'Биокотлета из марсианской Магнолии',
+        'filling'
+      );
+      cy.checkIngredientInConstructor('Соус Spicy-X', 'filling');
+
+      // Проверяем количество начинок через alias
+      cy.get('@ingredientsList').children().should('have.length.at.least', 2);
     });
   });
 
   describe('Модальное окно ингредиента', () => {
     it('должно открыться при клике на ингредиент', () => {
-      // Кликаем на ингредиент
-      cy.contains('Краторная булка N-200i').click();
+      // Открываем модальное окно через кастомную команду
+      cy.openIngredientModal('Краторная булка N-200i');
 
-      // Проверяем, что модальное окно открылось
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      // Используем alias для модального окна
+      cy.get(SELECTORS.modal).as('modal');
 
       // Проверяем, что в модальном окне отображается информация о правильном ингредиенте
-      cy.get('[data-cy="modal"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
-      cy.get('[data-cy="modal"]').contains('Калории').should('exist');
-      cy.get('[data-cy="modal"]').contains('Белки').should('exist');
-      cy.get('[data-cy="modal"]').contains('Жиры').should('exist');
-      cy.get('[data-cy="modal"]').contains('Углеводы').should('exist');
+      cy.get('@modal').contains('Краторная булка N-200i').should('exist');
+      cy.get('@modal').contains('Калории').should('exist');
+      cy.get('@modal').contains('Белки').should('exist');
+      cy.get('@modal').contains('Жиры').should('exist');
+      cy.get('@modal').contains('Углеводы').should('exist');
     });
 
     it('должно закрыться при клике на крестик', () => {
       // Открываем модальное окно
-      cy.contains('Биокотлета из марсианской Магнолии').click();
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      cy.openIngredientModal('Биокотлета из марсианской Магнолии');
+
+      // Используем alias для кнопки закрытия
+      cy.get(SELECTORS.modalClose).as('closeButton');
 
       // Кликаем на кнопку закрытия
-      cy.get('[data-cy="modal-close"]').first().click();
+      cy.get('@closeButton').first().click();
 
       // Ждем, чтобы модальное окно закрылось
       cy.wait(500);
@@ -165,39 +133,43 @@ describe('Тестирование конструктора бургера', () 
 
     it('должно закрыться при клике на оверлей', () => {
       // Открываем модальное окно
-      cy.contains('Соус Spicy-X').click();
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      cy.openIngredientModal('Соус Spicy-X');
+
+      // Используем alias для оверлея
+      cy.get(SELECTORS.modalOverlay).as('overlay');
 
       // Кликаем на оверлей (вне контента модального окна)
       // force: true нужен, так как оверлей находится под контентом модального окна
-      cy.get('[data-cy="modal-overlay"]').click({ force: true });
+      cy.get('@overlay').click({ force: true });
 
       // Ждем, чтобы модальное окно закрылось
       cy.wait(500);
     });
 
     it('должно отображать данные именно того ингредиента, на который кликнули', () => {
-      // Кликаем на первый ингредиент
-      cy.contains('Филе Люминесцентного тетраодонтимформа').click();
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      // Открываем модальное окно с первым ингредиентом
+      cy.openIngredientModal('Филе Люминесцентного тетраодонтимформа');
+
+      // Используем alias для модального окна
+      cy.get(SELECTORS.modal).as('modal');
 
       // Проверяем, что отображаются данные первого ингредиента
-      cy.get('[data-cy="modal"]')
+      cy.get('@modal')
         .contains('Филе Люминесцентного тетраодонтимформа')
         .should('exist');
 
       // Закрываем модальное окно
-      cy.get('[data-cy="modal-close"]').first().click();
+      cy.get(SELECTORS.modalClose).first().click();
 
-      // Кликаем на другой ингредиент
-      cy.contains('Соус фирменный Space Sauce').click();
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      // Открываем модальное окно с другим ингредиентом
+      cy.openIngredientModal('Соус фирменный Space Sauce');
+
+      // Обновляем alias для нового модального окна
+      cy.get(SELECTORS.modal).as('modal');
 
       // Проверяем, что теперь отображаются данные второго ингредиента
-      cy.get('[data-cy="modal"]')
-        .contains('Соус фирменный Space Sauce')
-        .should('exist');
-      cy.get('[data-cy="modal"]')
+      cy.get('@modal').contains('Соус фирменный Space Sauce').should('exist');
+      cy.get('@modal')
         .contains('Филе Люминесцентного тетраодонтимформа')
         .should('not.exist');
     });
@@ -205,42 +177,39 @@ describe('Тестирование конструктора бургера', () 
 
   describe('Создание заказа', () => {
     it('должен успешно создать заказ и очистить конструктор', () => {
-      // Собираем бургер
-      cy.contains('Краторная булка N-200i')
-        .closest('li')
-        .find('button')
-        .click();
+      // Собираем бургер используя кастомные команды
+      cy.addIngredient('Краторная булка N-200i');
+      cy.addIngredient('Биокотлета из марсианской Магнолии');
+      cy.addIngredient('Соус Spicy-X');
 
-      cy.contains('Биокотлета из марсианской Магнолии')
-        .closest('li')
-        .find('button')
-        .click();
-
-      cy.contains('Соус Spicy-X')
-        .closest('li')
-        .find('button')
-        .click();
+      // Создаем alias для элементов конструктора
+      cy.get(SELECTORS.constructorBunTop).as('bunTop');
+      cy.get(SELECTORS.constructorIngredients).as('fillings');
 
       // Проверяем, что ингредиенты добавлены
-      cy.get('[data-cy="constructor-bun-top"]').should('exist');
-      cy.get('[data-cy="constructor-ingredients"]')
-        .children()
-        .should('have.length', 2);
+      cy.get('@bunTop').should('exist');
+      cy.get('@fillings').children().should('have.length', 2);
+
+      // Создаем alias для кнопки заказа
+      cy.get(SELECTORS.orderButton).as('orderButton');
 
       // Кликаем на кнопку "Оформить заказ"
-      cy.get('[data-cy="order-button"]').first().click();
+      cy.get('@orderButton').first().click();
 
       // Ждем ответа от сервера
       cy.wait('@createOrder');
 
+      // Создаем alias для модального окна заказа
+      cy.get(SELECTORS.modal, { timeout: 10000 }).as('orderModal');
+
       // Проверяем, что модальное окно с заказом открылось
-      cy.get('[data-cy="modal"]', { timeout: 10000 }).should('exist');
+      cy.get('@orderModal').should('exist');
 
       // Проверяем, что отображается правильный номер заказа
-      cy.get('[data-cy="order-number"]').contains('54321').should('exist');
+      cy.get(SELECTORS.orderNumber).contains('54321').should('exist');
 
       // Закрываем модальное окно
-      cy.get('[data-cy="modal-close"]').first().click();
+      cy.get(SELECTORS.modalClose).first().click();
 
       // Ждем, чтобы модальное окно закрылось
       cy.wait(500);
